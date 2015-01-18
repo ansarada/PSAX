@@ -49,9 +49,9 @@ function Set-NetworkPath {
 		Write-Verbose "Creating network path $Name"
 		switch($permissions)
 		{
-			'FullAccess'{ New-SmbShare –Name $Name –Path $LocalPath -FullAccess $Account }
-			'ReadOnly'  { New-SmbShare –Name $Name –Path $LocalPath -ReadAccess $Account }
-			'NoAccess'  { New-SmbShare –Name $Name –Path $LocalPath -NoAccess $Account }
+			'FullAccess'{ New-SmbShare -Name $Name -Path $LocalPath -FullAccess $Account }
+			'ReadOnly'  { New-SmbShare -Name $Name -Path $LocalPath -ReadAccess $Account }
+			'NoAccess'  { New-SmbShare -Name $Name -Path $LocalPath -NoAccess $Account }
 		}
 		Write-Verbose "Finished creating network path $Name"
 	}
