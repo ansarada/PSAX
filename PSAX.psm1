@@ -7,4 +7,4 @@ Resolve-Path |
 Where-Object { -not ($_.ProviderPath.Contains(".Tests.")) } |
 ForEach-Object { . $_.ProviderPath }
 
-Export-ModuleMember Set-Path, Set-PathAccessRule, Create-LocalUser, Set-NetworkPath
+Export-ModuleMember Set-Path, Set-PathAccessRule, Create-LocalUser, Set-NetworkPath, Set-MyItemProperty
