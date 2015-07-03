@@ -10,11 +10,11 @@
     Name of the key
 
 .PARAMETER Type
-    Type of the key. Possible values are: String, Binary, DWord, ExpandString, MultiString, String, QWord
+    Type of the key. Possible values are: String, Binary, DWord, ExpandString, MultiString, QWord
 
 .PARAMETER Value
     Value of key
-    
+
 .EXAMPLE
     C:\PS> Set-MyItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\"  -Name "BackConnectionHostNames" -PropertyType "MultiString" -Value "documentprovider.ansarada.prod"
 
@@ -27,13 +27,13 @@ function Set-MyItemProperty {
         [parameter(Mandatory=$true)]
         [String]
         $Path,
-        
+
         [parameter(Mandatory=$true)]
         [String]
         $Name,
-        
+
         [parameter(Mandatory=$true)]
-        [ValidateSet("String", "Binary", "DWord", "ExpandString", "MultiString", "String", "QWord")] 
+        [ValidateSet("String", "Binary", "DWord", "ExpandString", "MultiString", "QWord")]
         [String]
         $Type,
 
@@ -41,10 +41,10 @@ function Set-MyItemProperty {
         [String]
         $Value
     )
-    
+
     $ItemExists = $false;
     $ValueChanged = $false;
-    
+
     If ($PSBoundParameters['Debug']) {
         $DebugPreference = 'Continue'
     }
@@ -55,7 +55,7 @@ function Set-MyItemProperty {
 
         if ($KeyVal -ne $null) {
             if($KeyVal -eq $Value) {
-                 $ItemExists = $true    
+                 $ItemExists = $true
             }
             else {
                 $ItemExists = $true
@@ -68,10 +68,10 @@ function Set-MyItemProperty {
         Write-Debug "Item property $Path\$Name with value $Value already exists."
      }
      elseif ($ItemExists -and $ValueChanged) {
-        Set-ItemProperty -Path $Path -Name $Name -Value $Value
+        Set-ItemProperty -Path $Path -Name $Name -Type $Type -Value $Value
         Write-Debug "Item property $Path\$Name value was changed to $Value"
      }
      else {
-        New-ItemProperty -Path $path  -Name $Name -Type $PropertyType -Value $Value
+        New-ItemProperty -Path $path  -Name $Name -Type $Type -Value $Value
      }
 }
