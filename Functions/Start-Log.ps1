@@ -1,5 +1,4 @@
 Set-StrictMode -Version Latest
-Import-Module PSAX
 
 function Start-Log {
 
