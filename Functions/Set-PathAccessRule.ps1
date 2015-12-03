@@ -43,17 +43,21 @@ function Set-PathAccessRule {
 
         [parameter()]
 		[String[]]
-        $PropagationFlags = @("None")
+        $PropagationFlags = @("None"),
+
+        # Set if you want all child files or folders set too
+        [Switch]
+        $Recurse
 	)
 
     [System.Security.AccessControl.InheritanceFlags]$InheritanceFlags = $InheritanceFlags -join ','
 
     foreach ($Path in $Paths) {
-        
+
         $Acl = Get-Acl $Path
 
         foreach ($Principle in $Principles) {
-            
+
             foreach ($FileSystemRight in $Permissions.Keys) {
 
                 $AccessControl = $Permissions.Item($FileSystemRight)
@@ -61,9 +65,22 @@ function Set-PathAccessRule {
                 $Ar = New-Object  system.security.accesscontrol.filesystemaccessrule($Principle,$FileSystemRight,$InheritanceFlags,$PropagationFlags,$AccessControl)
                 $Acl.SetAccessRule($Ar)
             }
-    
+
             Set-Acl $Path $Acl
         }
-        
+
+        if ($Recurse) {
+            Get-ChildItem $path | foreach {
+                $parameters = @{
+                    Path = $_;
+                    $Principles = Principles;
+                    $Permissions = $Permissions;
+                    $InheritanceFlags = $InheritanceFlags;
+                    $PropagationFlags = $PropagationFlags;
+                    $Recurse = $true
+                }
+                Set-PathAccessRule @parameters
+            }
+        }
     }
 }
