@@ -10,23 +10,23 @@ function Write-Log {
 		$Log,
 
 		[parameter(mandatory=$true,position=1)]
-		[String]
+		[Object]
 		$LogData
 	)
 
 	process {
 
-		$RequiredKeys = @(
+		$requiredKeys = @(
 			'LogPath',
 			'AddtionalLogData'
 		)
-		foreach ($Key in $RequiredKeys) {
-			Write-Verbose "Checking to see if log parameter contains $Key key"
-			if ($Log.Keys -contains $Key) {
-				Write-Verbose "$Key key found in Log parameter"
+		foreach ($key in $requiredKeys) {
+			Write-Verbose "Checking to see if log parameter contains $key key"
+			if ($Log.Keys -contains $key) {
+				Write-Verbose "$key key found in Log parameter"
 			}
 			else {
-				throw "Unable to find $Key key in Log parameter, you need to pass in result of Start-Log"
+				throw "Unable to find $key key in Log parameter, you need to pass in result of Start-Log"
 			}
 		}
 
@@ -38,17 +38,19 @@ function Write-Log {
 			throw "Unable to find log file $($Log.LogPath)"
 		}
 
-		$Pid = [System.Diagnostics.Process]::GetCurrentProcess()
+		$pidId = [System.Diagnostics.Process]::GetCurrentProcess().Id
 
 		$LogRecord = @{
-			TimeStamp = $(Get-Date -Format 'F');
-			Hostname = $env:ComputerName;
-			Pid = $Pid.Id;
-			Username = $env:Username;
-			LogPath = $Log.LogPath;
-			LogData = $LogData;
-			AddtionalLogData = $Log.AddtionalLogData
+			timeStamp = $(Get-Date -Format 'F');
+			hostname = $env:ComputerName;
+			pidId = $pidId;
+			username = $env:Username;
+			logPath = $Log.LogPath;
+			logData = $LogData
 		}
-		ConvertTo-Json $LogRecord -Compress | Out-File -FilePath $Log.LogPath -Append
+		if ($Log.AddtionalLogData -ne $null) {
+				$message.Add('addtionalLogData', $Log.AddtionalLogData)
+		}
+		ConvertTo-Json $LogRecord -Compress -Depth 1000 | Out-File -FilePath $Log.LogPath -Append
 	}
 }

@@ -7,11 +7,11 @@ function Start-Log {
 	param (
 		[parameter(mandatory=$true,position=0)]
 		[String]
-		$LogDirPath,
+		$Path,
 
 		[parameter(mandatory=$true,position=1)]
 		[String]
-		$LogName,
+		$Name,
 
 		[parameter()]
 		[Hashtable]
@@ -20,52 +20,54 @@ function Start-Log {
 
 	process {
 
-		Write-Verbose "Checking to see if log directory path $LogDirPath exists"
-		if (Test-Path $LogDirPath) {
-			Write-Verbose "Log directory path $LogDirPath exists"
+		Write-Verbose "Checking to see if log directory path $Path exists"
+		if (Test-Path $Path) {
+			Write-Verbose "Log directory path $Path exists"
 		}
 		else {
-			Write-Verbose "Log directory path $LogDirPath does not exist, creating"
-			Set-Path $LogDirPath
+			Write-Verbose "Log directory path $Path does not exist, creating"
+			Set-Path $Path
 		}
 
-		$Pid = [System.Diagnostics.Process]::GetCurrentProcess()
+		$pidId = [System.Diagnostics.Process]::GetCurrentProcess().Id
 		$i = 0
-		$LimitI = 1000
+		$iLimit = 1000
 
 		do {
-			$LogFilename = (@(
-					$LogName,
+			$filename = (@(
+					$Name,
 					$(Get-Date -Format 'yyyyMMdd_hhmmss'),
-					$Pid.Id,
-					[Convert]::ToString($i).PadLeft([Convert]::ToString($LimitI).Length-1, '0')
+					$pidId,
+					[Convert]::ToString($i).PadLeft([Convert]::ToString($iLimit).Length-1, '0')
 				) -join '_') + '.log'
 			$i++
-		} while ($(Test-Path $(Join-Path $LogDirPath $LogFilename)) -and $i -le $LimitI)
+		} while ($(Test-Path $(Join-Path $Path $filename)) -and $i -le $iLimit)
 
-		$LogPath = Join-Path $LogDirPath $LogFilename
-		Write-Verbose "Log path set to $LogPath"
+		$logPath = Join-Path $Path $filename
+		Write-Verbose "Log path set to $logPath"
 
-		if (Test-Path $LogPath) {
-			throw "Unable to generate log path, last tried $LogPath"
+		if (Test-Path $logPath) {
+			throw "Unable to generate log path, last tried $logPath"
 		}
 		else {
-			$LogRecord = @{
-				TimeStamp = $(Get-Date -Format 'F');
-				Hostname = $env:ComputerName;
-				Pid = $Pid.Id;
-				Username = $env:Username;
-				LogPath = $LogPath;
-				LogData = @{
-					Message = "Starting PSJsonLogger $LogPath";
-				};
-				AddtionalLogData = $AddtionalLogData
+			$message = @{
+				timeStamp = $(Get-Date -Format 'F');
+				hostname = $env:ComputerName;
+				pidId = $pidId;
+				username = $env:Username;
+				logPath = $logPath;
+				logData = @{
+					message = "Starting PSJsonLogger $logPath";
+				}
 			}
-			ConvertTo-Json $LogRecord -Compress | Out-File -FilePath $LogPath
+			if ($AddtionalLogData -ne $null) {
+				$message.Add('addtionalLogData', $AddtionalLogData)
+			}
+			ConvertTo-Json $message -Compress -Depth 1000 | Out-File -FilePath $logPath
 		}
 
 		return @{
-			LogPath = $LogPath;
+			LogPath = $logPath;
 			AddtionalLogData = $AddtionalLogData
 		}
 	}
