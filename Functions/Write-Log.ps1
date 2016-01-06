@@ -49,7 +49,7 @@ function Write-Log {
 			logData = $LogData
 		}
 		if ($Log.AddtionalLogData -ne $null) {
-				$message.Add('addtionalLogData', $Log.AddtionalLogData)
+				$LogRecord.Add('addtionalLogData', $Log.AddtionalLogData)
 		}
 		ConvertTo-Json $LogRecord -Compress -Depth 1000 | Out-File -FilePath $Log.LogPath -Append
 	}
