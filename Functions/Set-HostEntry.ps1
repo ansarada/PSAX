@@ -16,7 +16,7 @@
 	Overrides the path for the hosts file. Used for testing purposes
 
 	.EXAMPLE
-	C:\PS> Set-HostEntry -IpAddress 127.0.0.1  -Hostname dataroom.ansarada.dev -Comment "Entry for the local dataroom"
+	C:\PS> Set-HostEntry -IpAddress 127.0.0.1  -Hostname foo.bar -Comment "Entry for the local host"
 #>
 	
 function Set-HostEntry {
