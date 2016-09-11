@@ -12,7 +12,6 @@ Describe "Write-Log" {
         It "Creates a line entry in example.log with default"{
             Write-Log -Log $Log -LogData 'Test Message Default'
             $Log.LogPath | Should Contain '"logData":"Test Message Default".*"severity":"Information"'
-            ((Get-Content $Log.LogPath) -Split "`n").length | Should Be 2
         }
     }
 
@@ -20,7 +19,6 @@ Describe "Write-Log" {
         It "Creates a line entry in example.log with error"{
             Write-Log -Log $Log -LogData 'Test Message Error' -Severity 'Error'
             $Log.LogPath | Should Contain '"logData":"Test Message Error".*"severity":"Error"'
-            ((Get-Content $Log.LogPath) -Split "`n").length | Should Be 2
         }
     }
 
@@ -28,7 +26,6 @@ Describe "Write-Log" {
         It "Creates a line entry in example.log with warning"{
             Write-Log -Log $Log -LogData 'Test Message warning' -Severity 'Warning'
             $Log.LogPath | Should Contain '"logData":"Test Message warning".*"severity":"Warning"'
-            ((Get-Content $Log.LogPath) -Split "`n").length | Should Be 2
         }
     }
 
@@ -36,7 +33,6 @@ Describe "Write-Log" {
         It "Creates a line entry in example.log with debug"{
             Write-Log -Log $Log -LogData 'Test Message Debug' -Severity 'Debug'
             $Log.LogPath | Should Contain '"logData":"Test Message Debug".*"severity":"Debug"'
-            ((Get-Content $Log.LogPath) -Split "`n").length | Should Be 2
         }
     }
 
@@ -44,7 +40,6 @@ Describe "Write-Log" {
         It "Creates a line entry in example.log with info"{
             Write-Log -Log $Log -LogData 'Test Message Information'
             $Log.LogPath | Should Contain '"logData":"Test Message Information".*"severity":"Information"'
-            ((Get-Content $Log.LogPath) -Split "`n").length | Should Be 2
         }
     }
 
