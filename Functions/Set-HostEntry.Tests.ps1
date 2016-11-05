@@ -5,1024 +5,1024 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests.", ".")
 
 Describe "Set-HostEntry" {
 
-	Context "Host entry does not exist. Entries separated by tabs" {
+    Context "Host entry does not exist. Entries separated by tabs" {
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.4`thostA`t# CommentA"
- 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1`t# comment1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.4`thostA`t# CommentA"
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1`t# comment1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
 
-		It "Should add the host entry. Leaves existing entries in the same order." {
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			$Parameters = @{
-				IpAddress = "127.0.0.4";
-				Hostname = "hostA";
-				Comment = "CommentA";
-				HostsFile = $HostsFile;
-			}
-
-			Set-HostEntry @Parameters
-
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
-
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# comment1",
-				"127.0.0.2`thost2`t# comment2",
-				"127.0.0.3`thost3`t# comment3",
-				"127.0.0.4`thostA`t# CommentA"
-			) -join "`r`n"
+        It "Should add the host entry. Leaves existing entries in the same order." {
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
-		}
-
-		Remove-Item $HostsFile
+            $Parameters = @{
+                IpAddress = "127.0.0.4";
+                Hostname = "hostA";
+                Comment = "CommentA";
+                HostsFile = $HostsFile;
+            }
 
-	}
+            Set-HostEntry @Parameters
 
-	Context "Host entry does not exist. Entries separated by spaces" {
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.4`thostA`t# CommentA"
- 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1  # comment1",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# comment1",
+                "127.0.0.2`thost2`t# comment2",
+                "127.0.0.3`thost3`t# comment3",
+                "127.0.0.4`thostA`t# CommentA"
+            ) -join "`r`n"
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		It "Should add the host entry. Leaves existing entries in the same order." {
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        }
 
-			$Parameters = @{
-				IpAddress = "127.0.0.4";
-				Hostname = "hostA";
-				Comment = "CommentA";
-				HostsFile = $HostsFile;
-			}
+        Remove-Item $HostsFile
 
-			Set-HostEntry @Parameters
-
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+    }
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1 host1  # comment1",
-				"127.0.0.2   host2 # comment2",
-				"127.0.0.3     host3   # comment3",
-				"127.0.0.4`thostA`t# CommentA"
-			) -join "`r`n"
+    Context "Host entry does not exist. Entries separated by spaces" {
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
-		}
-
-		Remove-Item $HostsFile
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.4`thostA`t# CommentA"
 
-	}
+        $dummyHostsFile = @(
+            "127.0.0.1 host1  # comment1",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-	Context "Host entry does not exist. Entries separated by tabs and spaces combination" {
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.4`thostA`t# CommentA"
- 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t  # comment1",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+        It "Should add the host entry. Leaves existing entries in the same order." {
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            $Parameters = @{
+                IpAddress = "127.0.0.4";
+                Hostname = "hostA";
+                Comment = "CommentA";
+                HostsFile = $HostsFile;
+            }
 
-		It "Should add the host entry. Leaves existing entries in the same order." {
+            Set-HostEntry @Parameters
 
-			$Parameters = @{
-				IpAddress = "127.0.0.4";
-				Hostname = "hostA";
-				Comment = "CommentA";
-				HostsFile = $HostsFile;
-			}
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			Set-HostEntry @Parameters
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1 host1  # comment1",
+                "127.0.0.2   host2 # comment2",
+                "127.0.0.3     host3   # comment3",
+                "127.0.0.4`thostA`t# CommentA"
+            ) -join "`r`n"
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`t host1`t  # comment1",
-				"127.0.0.2   `thost2 `t#`t comment2",
-				"127.0.0.3   `t  host3 `t  # comment3",
-				"127.0.0.4`thostA`t# CommentA"
-			) -join "`r`n"
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        }
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
-		}
+        Remove-Item $HostsFile
 
-		Remove-Item $HostsFile
+    }
 
-	}
+    Context "Host entry does not exist. Entries separated by tabs and spaces combination" {
 
-	Context "Host entry does not exist. No comment provided. Entries separated by tabs" {
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.4`thostA`t# CommentA"
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.4`thostA"
- 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1`t# comment1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t  # comment1",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-		It "Should add the host entry. Leaves existing entries in the same order." {
+        It "Should add the host entry. Leaves existing entries in the same order." {
 
-			$Parameters = @{
-				IpAddress = "127.0.0.4";
-				Hostname = "hostA";
-				HostsFile = $HostsFile;
-			}
+            $Parameters = @{
+                IpAddress = "127.0.0.4";
+                Hostname = "hostA";
+                Comment = "CommentA";
+                HostsFile = $HostsFile;
+            }
 
-			Set-HostEntry @Parameters
+            Set-HostEntry @Parameters
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# comment1",
-				"127.0.0.2`thost2`t# comment2",
-				"127.0.0.3`thost3`t# comment3",
-				"127.0.0.4`thostA"
-			) -join "`r`n"
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`t host1`t  # comment1",
+                "127.0.0.2   `thost2 `t#`t comment2",
+                "127.0.0.3   `t  host3 `t  # comment3",
+                "127.0.0.4`thostA`t# CommentA"
+            ) -join "`r`n"
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
-		}
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		Remove-Item $HostsFile
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        }
 
-	}
+        Remove-Item $HostsFile
 
-	Context "Host entry does not exist. No comment provided. Entries separated by spaces" {
+    }
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.4`thostA"
- 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1  # comment1",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+    Context "Host entry does not exist. No comment provided. Entries separated by tabs" {
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.4`thostA"
 
-		It "Should add the host entry. Leaves existing entries in the same order." {
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1`t# comment1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
 
-			$Parameters = @{
-				IpAddress = "127.0.0.4";
-				Hostname = "hostA";
-				HostsFile = $HostsFile;
-			}
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			Set-HostEntry @Parameters
+        It "Should add the host entry. Leaves existing entries in the same order." {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            $Parameters = @{
+                IpAddress = "127.0.0.4";
+                Hostname = "hostA";
+                HostsFile = $HostsFile;
+            }
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1 host1  # comment1",
-				"127.0.0.2   host2 # comment2",
-				"127.0.0.3     host3   # comment3",
-				"127.0.0.4`thostA"
-			) -join "`r`n"
+            Set-HostEntry @Parameters
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
-		}
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		Remove-Item $HostsFile
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# comment1",
+                "127.0.0.2`thost2`t# comment2",
+                "127.0.0.3`thost3`t# comment3",
+                "127.0.0.4`thostA"
+            ) -join "`r`n"
 
-	}
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-	Context "Host entry does not exist. No comment provided. Entries separated by tabs and spaces combination" {
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        }
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.4`thostA"
- 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t  # comment1",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+        Remove-Item $HostsFile
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+    }
 
-		It "Should add the host entry. Leaves existing entries in the same order." {
+    Context "Host entry does not exist. No comment provided. Entries separated by spaces" {
 
-			$Parameters = @{
-				IpAddress = "127.0.0.4";
-				Hostname = "hostA";
-				HostsFile = $HostsFile;
-			}
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.4`thostA"
 
-			Set-HostEntry @Parameters
+        $dummyHostsFile = @(
+            "127.0.0.1 host1  # comment1",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`t host1`t  # comment1",
-				"127.0.0.2   `thost2 `t#`t comment2",
-				"127.0.0.3   `t  host3 `t  # comment3",
-				"127.0.0.4`thostA"
-			) -join "`r`n"
+        It "Should add the host entry. Leaves existing entries in the same order." {
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
-		}
+            $Parameters = @{
+                IpAddress = "127.0.0.4";
+                Hostname = "hostA";
+                HostsFile = $HostsFile;
+            }
 
-		Remove-Item $HostsFile
+            Set-HostEntry @Parameters
 
-	}
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-	Context "Host entry exists; Ip address is not the same as provided. Entries separate by tabs" {
-	
-		$HostsFile =  "TestDrive:\testHosts_tests.txt";
-		$NewHostEntry = "127.0.0.9`thost2`t# comment2"
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1 host1  # comment1",
+                "127.0.0.2   host2 # comment2",
+                "127.0.0.3     host3   # comment3",
+                "127.0.0.4`thostA"
+            ) -join "`r`n"
 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1`t# comment1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        }
 
-		It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
+        Remove-Item $HostsFile
 
-			$Parameters = @{
-				IpAddress = "127.0.0.9";
-				Hostname = "host2";
-				Comment = "comment2";
-				HostsFile = $HostsFile;
-			}
+    }
 
-			Set-HostEntry @Parameters
+    Context "Host entry does not exist. No comment provided. Entries separated by tabs and spaces combination" {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.4`thostA"
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# comment1",
-				"127.0.0.9`thost2`t# comment2",
-				"127.0.0.3`thost3`t# comment3"
-			) -join "`r`n"
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t  # comment1",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        It "Should add the host entry. Leaves existing entries in the same order." {
 
-		}
+            $Parameters = @{
+                IpAddress = "127.0.0.4";
+                Hostname = "hostA";
+                HostsFile = $HostsFile;
+            }
 
-		Remove-Item $HostsFile
+            Set-HostEntry @Parameters
 
-	}
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-	Context "Host entry exists; Ip address is not the same as provided. Entries separate by spaces" {
-	
-		$HostsFile =  "TestDrive:\testHosts_tests.txt";
-		$NewHostEntry = "127.0.0.9`thost2`t# comment2"
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`t host1`t  # comment1",
+                "127.0.0.2   `thost2 `t#`t comment2",
+                "127.0.0.3   `t  host3 `t  # comment3",
+                "127.0.0.4`thostA"
+            ) -join "`r`n"
 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1  # comment1",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        }
 
-		It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
+        Remove-Item $HostsFile
 
-			$Parameters = @{
-				IpAddress = "127.0.0.9";
-				Hostname = "host2";
-				Comment = "comment2";
-				HostsFile = $HostsFile;
-			}
+    }
 
-			Set-HostEntry @Parameters
+    Context "Host entry exists; Ip address is not the same as provided. Entries separate by tabs" {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        $HostsFile =  "TestDrive:\testHosts_tests.txt";
+        $NewHostEntry = "127.0.0.9`thost2`t# comment2"
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1 host1  # comment1",
-				"127.0.0.9`thost2`t# comment2",
-				"127.0.0.3     host3   # comment3"
-			) -join "`r`n"
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1`t# comment1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
 
-		}
+            $Parameters = @{
+                IpAddress = "127.0.0.9";
+                Hostname = "host2";
+                Comment = "comment2";
+                HostsFile = $HostsFile;
+            }
 
-		Remove-Item $HostsFile
+            Set-HostEntry @Parameters
 
-	}
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-	Context "Host entry exists; Ip address is not the same as provided. Entries separated by tabs and spaces combination" {
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# comment1",
+                "127.0.0.9`thost2`t# comment2",
+                "127.0.0.3`thost3`t# comment3"
+            ) -join "`r`n"
 
-		$HostsFile =  "TestDrive:\testHosts_tests.txt";
-		$NewHostEntry = "127.0.0.9`thost2`t# comment2"
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t  # comment1",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        }
 
-		It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
+        Remove-Item $HostsFile
 
-			$Parameters = @{
-				IpAddress = "127.0.0.9";
-				Hostname = "host2";
-				Comment = "comment2";
-				HostsFile = $HostsFile;
-			}
+    }
 
-			Set-HostEntry @Parameters
+    Context "Host entry exists; Ip address is not the same as provided. Entries separate by spaces" {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        $HostsFile =  "TestDrive:\testHosts_tests.txt";
+        $NewHostEntry = "127.0.0.9`thost2`t# comment2"
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`t host1`t  # comment1",
-				"127.0.0.9`thost2`t# comment2",
-				"127.0.0.3   `t  host3 `t  # comment3"
-			) -join "`r`n"
+        $dummyHostsFile = @(
+            "127.0.0.1 host1  # comment1",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
 
-		}
+            $Parameters = @{
+                IpAddress = "127.0.0.9";
+                Hostname = "host2";
+                Comment = "comment2";
+                HostsFile = $HostsFile;
+            }
 
-		Remove-Item $HostsFile
-	}
+            Set-HostEntry @Parameters
+
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1 host1  # comment1",
+                "127.0.0.9`thost2`t# comment2",
+                "127.0.0.3     host3   # comment3"
+            ) -join "`r`n"
+
+            $actualHostsFile = Get-Content $HostsFile | Out-String
+
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+
+        }
+
+        Remove-Item $HostsFile
+
+    }
+
+    Context "Host entry exists; Ip address is not the same as provided. Entries separated by tabs and spaces combination" {
+
+        $HostsFile =  "TestDrive:\testHosts_tests.txt";
+        $NewHostEntry = "127.0.0.9`thost2`t# comment2"
+
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t  # comment1",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
+
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+
+        It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
+
+            $Parameters = @{
+                IpAddress = "127.0.0.9";
+                Hostname = "host2";
+                Comment = "comment2";
+                HostsFile = $HostsFile;
+            }
+
+            Set-HostEntry @Parameters
+
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`t host1`t  # comment1",
+                "127.0.0.9`thost2`t# comment2",
+                "127.0.0.3   `t  host3 `t  # comment3"
+            ) -join "`r`n"
+
+            $actualHostsFile = Get-Content $HostsFile | Out-String
+
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+
+        }
+
+        Remove-Item $HostsFile
+    }
 
     Context "Host entry exists; Ip address is not the same as provided; comment is not provided. Entries separate by tabs" {
-	
-		$HostsFile =  "TestDrive:\testHosts_tests.txt";
-		$NewHostEntry = "127.0.0.9`thost2"
 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1`t# comment1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+        $HostsFile =  "TestDrive:\testHosts_tests.txt";
+        $NewHostEntry = "127.0.0.9`thost2"
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1`t# comment1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
 
-		It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			$Parameters = @{
-				IpAddress = "127.0.0.9";
-				Hostname = "host2";
-				HostsFile = $HostsFile;
-			}
+        It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
 
-			Set-HostEntry @Parameters
+            $Parameters = @{
+                IpAddress = "127.0.0.9";
+                Hostname = "host2";
+                HostsFile = $HostsFile;
+            }
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            Set-HostEntry @Parameters
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# comment1",
-				"127.0.0.9`thost2",
-				"127.0.0.3`thost3`t# comment3"
-			) -join "`r`n"
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# comment1",
+                "127.0.0.9`thost2",
+                "127.0.0.3`thost3`t# comment3"
+            ) -join "`r`n"
 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		}
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-		Remove-Item $HostsFile
+        }
 
-	}
+        Remove-Item $HostsFile
 
-	Context "Host entry exists; Ip address is not the same as provided; comment is not provided. Entries separate by spaces" {
-	
-		$HostsFile =  "TestDrive:\testHosts_tests.txt";
-		$NewHostEntry = "127.0.0.9`thost2"
+    }
 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1  # comment1",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+    Context "Host entry exists; Ip address is not the same as provided; comment is not provided. Entries separate by spaces" {
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        $HostsFile =  "TestDrive:\testHosts_tests.txt";
+        $NewHostEntry = "127.0.0.9`thost2"
 
-		It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
+        $dummyHostsFile = @(
+            "127.0.0.1 host1  # comment1",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-			$Parameters = @{
-				IpAddress = "127.0.0.9";
-				Hostname = "host2";
-				HostsFile = $HostsFile;
-			}
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			Set-HostEntry @Parameters
+        It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            $Parameters = @{
+                IpAddress = "127.0.0.9";
+                Hostname = "host2";
+                HostsFile = $HostsFile;
+            }
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1 host1  # comment1",
-				"127.0.0.9`thost2",
-				"127.0.0.3     host3   # comment3"
-			) -join "`r`n"
+            Set-HostEntry @Parameters
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1 host1  # comment1",
+                "127.0.0.9`thost2",
+                "127.0.0.3     host3   # comment3"
+            ) -join "`r`n"
 
-		}
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		Remove-Item $HostsFile
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-	}
+        }
 
-	Context "Host entry exists; Ip address is not the same as provided; comment is not provided. Entries separated by tabs and spaces combination" {
+        Remove-Item $HostsFile
 
-		$HostsFile =  "TestDrive:\testHosts_tests.txt";
-		$NewHostEntry = "127.0.0.9`thost2"
+    }
 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t  # comment1",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+    Context "Host entry exists; Ip address is not the same as provided; comment is not provided. Entries separated by tabs and spaces combination" {
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        $HostsFile =  "TestDrive:\testHosts_tests.txt";
+        $NewHostEntry = "127.0.0.9`thost2"
 
-		It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t  # comment1",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
 
-			$Parameters = @{
-				IpAddress = "127.0.0.9";
-				Hostname = "host2";
-				HostsFile = $HostsFile;
-			}
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			Set-HostEntry @Parameters
+        It "Should replace ip address in host entry with provided one. Leaves existing entries in the same order." {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            $Parameters = @{
+                IpAddress = "127.0.0.9";
+                Hostname = "host2";
+                HostsFile = $HostsFile;
+            }
 
-			#check order
-			$expectedHostsFile = @(
-				"127.0.0.1`t host1`t  # comment1",
-				"127.0.0.9`thost2",
-				"127.0.0.3   `t  host3 `t  # comment3"
-			) -join "`r`n"
+            Set-HostEntry @Parameters
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            #check order
+            $expectedHostsFile = @(
+                "127.0.0.1`t host1`t  # comment1",
+                "127.0.0.9`thost2",
+                "127.0.0.3   `t  host3 `t  # comment3"
+            ) -join "`r`n"
 
-		}
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		Remove-Item $HostsFile
-	}
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-	Context "Host entry exists; Ip address is the same as provided; comment is not the same as provided. Entries separated by tabs" {
+        }
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1`t# Comment111"
+        Remove-Item $HostsFile
+    }
 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1`t# comment1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+    Context "Host entry exists; Ip address is the same as provided; comment is not the same as provided. Entries separated by tabs" {
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1`t# Comment111"
 
-		It "Should replace the comment in host entry with the one provided. Leaves existing entries in the same order." {
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1`t# comment1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "Comment111";
-				HostsFile = $HostsFile;
-			}
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			Set-HostEntry @Parameters
+        It "Should replace the comment in host entry with the one provided. Leaves existing entries in the same order." {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "Comment111";
+                HostsFile = $HostsFile;
+            }
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# Comment111",
-				"127.0.0.2`thost2`t# comment2",
-				"127.0.0.3`thost3`t# comment3"
-			) -join "`r`n"
+            Set-HostEntry @Parameters
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		}
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# Comment111",
+                "127.0.0.2`thost2`t# comment2",
+                "127.0.0.3`thost3`t# comment3"
+            ) -join "`r`n"
 
-		Remove-Item $HostsFile
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-	}
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-	Context "Host entry exists; Ip address is the same as provided; comment is not the same as provided. Entries separated by spaces" {
+        }
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1`t# Comment111"
+        Remove-Item $HostsFile
 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1  # comment1",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+    }
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+    Context "Host entry exists; Ip address is the same as provided; comment is not the same as provided. Entries separated by spaces" {
 
-		It "Should replace the comment in host entry with the one provided. Leaves existing entries in the same order." {
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1`t# Comment111"
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "Comment111";
-				HostsFile = $HostsFile;
-			}
+        $dummyHostsFile = @(
+            "127.0.0.1 host1  # comment1",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-			Set-HostEntry @Parameters
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        It "Should replace the comment in host entry with the one provided. Leaves existing entries in the same order." {
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# Comment111",
-				"127.0.0.2   host2 # comment2",
-				"127.0.0.3     host3   # comment3"
-			) -join "`r`n"
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "Comment111";
+                HostsFile = $HostsFile;
+            }
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            Set-HostEntry @Parameters
 
-		}
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		Remove-Item $HostsFile
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# Comment111",
+                "127.0.0.2   host2 # comment2",
+                "127.0.0.3     host3   # comment3"
+            ) -join "`r`n"
 
-	}
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-	Context "Host entry exists; Ip address is the same as provided; comment is not the same as provided. Entries separated by tabs and spaces combination" {
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1`t# Comment111"
+        }
 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t  # comment1",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+        Remove-Item $HostsFile
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+    }
 
-		It "Should replace the comment in host entry with the one provided. Leaves existing entries in the same order." {
+    Context "Host entry exists; Ip address is the same as provided; comment is not the same as provided. Entries separated by tabs and spaces combination" {
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "Comment111";
-				HostsFile = $HostsFile;
-			}
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1`t# Comment111"
 
-			Set-HostEntry @Parameters
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t  # comment1",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# Comment111",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-			) -join "`r`n"
+        It "Should replace the comment in host entry with the one provided. Leaves existing entries in the same order." {
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "Comment111";
+                HostsFile = $HostsFile;
+            }
 
-		}
+            Set-HostEntry @Parameters
 
-		Remove-Item $HostsFile
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-	}
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# Comment111",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+            ) -join "`r`n"
 
-	Context "Host entry exists; Ip address is the same as provided; comment does not exist. Entries separated by tabs" {
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1`t# Comment111"
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+        }
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        Remove-Item $HostsFile
 
-		It "Should add the comment to host entry with provided one. Leaves existing entries in the same order." {
+    }
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "Comment111";
-				HostsFile = $HostsFile;
-			}
+    Context "Host entry exists; Ip address is the same as provided; comment does not exist. Entries separated by tabs" {
 
-			Set-HostEntry @Parameters
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1`t# Comment111"
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# Comment111",
-				"127.0.0.2`thost2`t# comment2",
-				"127.0.0.3`thost3`t# comment3"
-			) -join "`r`n"
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        It "Should add the comment to host entry with provided one. Leaves existing entries in the same order." {
 
-		}
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "Comment111";
+                HostsFile = $HostsFile;
+            }
 
-		Remove-Item $HostsFile
+            Set-HostEntry @Parameters
 
-	}
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-	Context "Host entry exists; Ip address is the same as provided; comment does not exist. Entries separated by spaces" {
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# Comment111",
+                "127.0.0.2`thost2`t# comment2",
+                "127.0.0.3`thost3`t# comment3"
+            ) -join "`r`n"
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1`t# Comment111"
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        }
 
-		It "Should add the comment to host entry with provided one. Leaves existing entries in the same order." {
+        Remove-Item $HostsFile
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "Comment111";
-				HostsFile = $HostsFile;
-			}
+    }
 
-			Set-HostEntry @Parameters
+    Context "Host entry exists; Ip address is the same as provided; comment does not exist. Entries separated by spaces" {
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1`t# Comment111"
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# Comment111",
-			    "127.0.0.2   host2 # comment2",
-			    "127.0.0.3     host3   # comment3"
-			) -join "`r`n"
+        $dummyHostsFile = @(
+            "127.0.0.1 host1",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-		}
+        It "Should add the comment to host entry with provided one. Leaves existing entries in the same order." {
 
-		Remove-Item $HostsFile
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "Comment111";
+                HostsFile = $HostsFile;
+            }
 
-	}
+            Set-HostEntry @Parameters
 
-	Context "Host entry exists; Ip address is the same as provided; comment does not exist. Entries separated by tabs and spaces combination" {
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1`t# Comment111"
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# Comment111",
+                "127.0.0.2   host2 # comment2",
+                "127.0.0.3     host3   # comment3"
+            ) -join "`r`n"
 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t ",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-		It "Should add the comment to host entry with provided one. Leaves existing entries in the same order." {
+        }
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "Comment111";
-				HostsFile = $HostsFile;
-			}
+        Remove-Item $HostsFile
 
-			Set-HostEntry @Parameters
+    }
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+    Context "Host entry exists; Ip address is the same as provided; comment does not exist. Entries separated by tabs and spaces combination" {
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# Comment111",
-				"127.0.0.2   `thost2 `t#`t comment2",
-				"127.0.0.3   `t  host3 `t  # comment3"
-			) -join "`r`n"
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1`t# Comment111"
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t ",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
 
-		}
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-		Remove-Item $HostsFile
+        It "Should add the comment to host entry with provided one. Leaves existing entries in the same order." {
 
-	}
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "Comment111";
+                HostsFile = $HostsFile;
+            }
 
-	Context "Host entry exists; Ip address is the same as provided; comment is the same as provided. Entries separated by tabs" {
+            Set-HostEntry @Parameters
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1`t# comment1"
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1`t# comment1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# Comment111",
+                "127.0.0.2   `thost2 `t#`t comment2",
+                "127.0.0.3   `t  host3 `t  # comment3"
+            ) -join "`r`n"
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "comment1";
-				HostsFile = $HostsFile;
-			}
+        }
 
-			Set-HostEntry @Parameters
+        Remove-Item $HostsFile
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+    }
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1`t# comment1",
-				"127.0.0.2`thost2`t# comment2",
-				"127.0.0.3`thost3`t# comment3"
-			) -join "`r`n"
+    Context "Host entry exists; Ip address is the same as provided; comment is the same as provided. Entries separated by tabs" {
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1`t# comment1"
 
-		}
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1`t# comment1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
 
-		Remove-Item $HostsFile
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-	}
+        It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
 
-	Context "Host entry exists; Ip address is the same as provided; comment is the same as provided. Entries separated by spaces" {
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "comment1";
+                HostsFile = $HostsFile;
+            }
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1 host1  # comment1"
+            Set-HostEntry @Parameters
 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1  # comment1",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1`t# comment1",
+                "127.0.0.2`thost2`t# comment2",
+                "127.0.0.3`thost3`t# comment3"
+            ) -join "`r`n"
 
-		It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "comment1";
-				HostsFile = $HostsFile;
-			}
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-			Set-HostEntry @Parameters
+        }
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        Remove-Item $HostsFile
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1 host1  # comment1",
-				"127.0.0.2   host2 # comment2",
-				"127.0.0.3     host3   # comment3"
-			) -join "`r`n"
+    }
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+    Context "Host entry exists; Ip address is the same as provided; comment is the same as provided. Entries separated by spaces" {
 
-		}
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1 host1  # comment1"
 
-		Remove-Item $HostsFile
+        $dummyHostsFile = @(
+            "127.0.0.1 host1  # comment1",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-	}
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-	Context "Host entry exists; Ip address is the same as provided; comment is the same as provided. Entries separated by tabs and spaces combination" {
+        It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`t host1`t  # comment1"
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "comment1";
+                HostsFile = $HostsFile;
+            }
 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t  # comment1",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+            Set-HostEntry @Parameters
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-		It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1 host1  # comment1",
+                "127.0.0.2   host2 # comment2",
+                "127.0.0.3     host3   # comment3"
+            ) -join "`r`n"
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				Comment = "comment1";
-				HostsFile = $HostsFile;
-			}
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-			Set-HostEntry @Parameters
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+        }
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`t host1`t  # comment1",
-				"127.0.0.2   `thost2 `t#`t comment2",
-				"127.0.0.3   `t  host3 `t  # comment3"
-			) -join "`r`n"
+        Remove-Item $HostsFile
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+    }
 
-		}
+    Context "Host entry exists; Ip address is the same as provided; comment is the same as provided. Entries separated by tabs and spaces combination" {
 
-		Remove-Item $HostsFile
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`t host1`t  # comment1"
 
-	}
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t  # comment1",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
 
-	Context "Host entry exists; Ip address is the same as provided; comment is not provided. Entries separated by tabs" {
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`thost1"
+        It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
 
-		$dummyHostsFile = @(
-			"127.0.0.1`thost1",
-			"127.0.0.2`thost2`t# comment2",
-			"127.0.0.3`thost3`t# comment3"
-		) -join "`n"
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                Comment = "comment1";
+                HostsFile = $HostsFile;
+            }
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+            Set-HostEntry @Parameters
 
-		It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				HostsFile = $HostsFile;
-			}
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`t host1`t  # comment1",
+                "127.0.0.2   `thost2 `t#`t comment2",
+                "127.0.0.3   `t  host3 `t  # comment3"
+            ) -join "`r`n"
 
-			Set-HostEntry @Parameters
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`thost1",
-				"127.0.0.2`thost2`t# comment2",
-				"127.0.0.3`thost3`t# comment3"
-			) -join "`r`n"
+        }
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+        Remove-Item $HostsFile
 
-		}
+    }
 
-		Remove-Item $HostsFile
+    Context "Host entry exists; Ip address is the same as provided; comment is not provided. Entries separated by tabs" {
 
-	}
-	
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`thost1"
+
+        $dummyHostsFile = @(
+            "127.0.0.1`thost1",
+            "127.0.0.2`thost2`t# comment2",
+            "127.0.0.3`thost3`t# comment3"
+        ) -join "`n"
+
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+
+        It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
+
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                HostsFile = $HostsFile;
+            }
+
+            Set-HostEntry @Parameters
+
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`thost1",
+                "127.0.0.2`thost2`t# comment2",
+                "127.0.0.3`thost3`t# comment3"
+            ) -join "`r`n"
+
+            $actualHostsFile = Get-Content $HostsFile | Out-String
+
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+
+        }
+
+        Remove-Item $HostsFile
+
+    }
+
     Context "Host entry exists; Ip address is the same as provided; comment is not provided. Entries separated by spaces" {
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1 host1  "
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1 host1  "
 
-		$dummyHostsFile = @(
-			"127.0.0.1 host1  ",
-			"127.0.0.2   host2 # comment2",
-			"127.0.0.3     host3   # comment3"
-		) -join "`n"
+        $dummyHostsFile = @(
+            "127.0.0.1 host1  ",
+            "127.0.0.2   host2 # comment2",
+            "127.0.0.3     host3   # comment3"
+        ) -join "`n"
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-		It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
+        It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				HostsFile = $HostsFile;
-			}
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                HostsFile = $HostsFile;
+            }
 
-			Set-HostEntry @Parameters
+            Set-HostEntry @Parameters
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1 host1  ",
-				"127.0.0.2   host2 # comment2",
-				"127.0.0.3     host3   # comment3"
-			) -join "`r`n"
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1 host1  ",
+                "127.0.0.2   host2 # comment2",
+                "127.0.0.3     host3   # comment3"
+            ) -join "`r`n"
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		}
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-		Remove-Item $HostsFile
+        }
 
-	}
+        Remove-Item $HostsFile
 
-	Context "Host entry exists; Ip address is the same as provided; comment is not provided. Entries separated by tabs and spaces combination" {
+    }
 
-		$HostsFile =  "TestDrive:\testHosts.txt";
-		$NewHostEntry = "127.0.0.1`t host1`t  "
+    Context "Host entry exists; Ip address is the same as provided; comment is not provided. Entries separated by tabs and spaces combination" {
 
-		$dummyHostsFile = @(
-			"127.0.0.1`t host1`t  ",
-			"127.0.0.2   `thost2 `t#`t comment2",
-			"127.0.0.3   `t  host3 `t  # comment3"
-		) -join "`n"
+        $HostsFile =  "TestDrive:\testHosts.txt";
+        $NewHostEntry = "127.0.0.1`t host1`t  "
 
-		New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
+        $dummyHostsFile = @(
+            "127.0.0.1`t host1`t  ",
+            "127.0.0.2   `thost2 `t#`t comment2",
+            "127.0.0.3   `t  host3 `t  # comment3"
+        ) -join "`n"
 
-		It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
+        New-Item $HostsFile -type file | Add-Content -Value $dummyHostsFile
 
-			$Parameters = @{
-				IpAddress = "127.0.0.1";
-				Hostname = "host1";
-				HostsFile = $HostsFile;
-			}
+        It "Should leave the host entry, ip address and comment as is. Leaves existing entries in the same order." {
 
-			Set-HostEntry @Parameters
+            $Parameters = @{
+                IpAddress = "127.0.0.1";
+                Hostname = "host1";
+                HostsFile = $HostsFile;
+            }
 
-			((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
+            Set-HostEntry @Parameters
 
-			#check for entry order
-			$expectedHostsFile = @(
-				"127.0.0.1`t host1`t  ",
-				"127.0.0.2   `thost2 `t#`t comment2",
-				"127.0.0.3   `t  host3 `t  # comment3"
-			) -join "`r`n"
+            ((Get-Content $HostsFile) -Contains $NewHostEntry) | Should be $true
 
-			$actualHostsFile = Get-Content $HostsFile | Out-String
-			 
-			$actualHostsFile | Should be ($expectedHostsFile + "`r`n")
+            #check for entry order
+            $expectedHostsFile = @(
+                "127.0.0.1`t host1`t  ",
+                "127.0.0.2   `thost2 `t#`t comment2",
+                "127.0.0.3   `t  host3 `t  # comment3"
+            ) -join "`r`n"
 
-		}
+            $actualHostsFile = Get-Content $HostsFile | Out-String
 
-		Remove-Item $HostsFile
+            $actualHostsFile | Should be ($expectedHostsFile + "`r`n")
 
-	}
+        }
+
+        Remove-Item $HostsFile
+
+    }
 }

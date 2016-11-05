@@ -7,9 +7,9 @@
             .PARAMETER InstallerPath
             The full path of the MSI installation file. The parameter will be checked, if the file does not exist the script will terminate. e.g. 'C:\temp\install.msi'
 
-            .PARAMETER ArgumentList	
+            .PARAMETER ArgumentList
             All of the native MSI arguments to be passed for installation as a string array e.g. -ArgumentList @('/L*v','C:\temp\install.log','/qn','NR_LICENSE_KEY=111111111111')
-            
+
             .EXAMPLE
             Install-MSI -InstallerPath 'C:\temp\install.msi' -ArgumentList @('/L*v','C:\temp\install.log','/qn','NR_LICENSE_KEY=111111111111')
             Will install the MSI silently with the required arguments.
@@ -27,10 +27,10 @@ Function Install-MSI
     (
         [Parameter(mandatory)]
         [ValidateScript({
-				Test-Path -LiteralPath $_ -PathType Leaf
+                Test-Path -LiteralPath $_ -PathType Leaf
         })]
         [ValidatePattern(
-				'.msi'
+                '.msi'
         )]
         [String] $InstallerPath,
 
@@ -41,21 +41,21 @@ Function Install-MSI
     )
 
 
-    Process {   
-         
+    Process {
+
         Write-Verbose 'Checking the powershell has been run as Administrator'
-             
+
         if(([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator'))
         {
             Write-Verbose 'Powershell running with Admin permissions. You shall pass.'
         }
-        else 
+        else
         {
             Throw 'Powershell is not running with Admin permissions. Escalate permissions and try again.'
         }
-                            
-            
-        Try 
+
+
+        Try
         {
             Write-Verbose "Trying to install Application from $InstallerPath"
             $InstallProcess = (Start-Process $InstallerPath -ArgumentList $ArgumentList -Wait -PassThru)
@@ -63,17 +63,17 @@ Function Install-MSI
             {
                 Write-Verbose -Message "$InstallerPath has been successfully installed according to exit code of 0"
             }
-            else 
+            else
             {
                 Throw "Installer exit code  $($InstallProcess.ExitCode) for file  $($InstallerPath)"
             }
         }
-            
-          
-        Catch 
+
+
+        Catch
         {
-            Throw "Installation failed due to: $_.exception" 
+            Throw "Installation failed due to: $_.exception"
         }
-         
+
     }
 }

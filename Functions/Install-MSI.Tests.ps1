@@ -7,8 +7,8 @@ Describe "Install-MSI" {
     Write-Host 'Creating Fake installers for test'
     New-item -Path $TestDrive\Realinstaller.msi -ItemType file
     New-item -Path $TestDrive\Realinstaller.exe -ItemType file
-    
-    
+
+
     It  'Should Throw if installer path does not exist ' {
         {install-msi -installerpath "$TestDrive\FakeInstaller.msi" -ArgumentList 'test'} | Should Throw
     }

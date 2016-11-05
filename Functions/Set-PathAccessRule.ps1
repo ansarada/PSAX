@@ -3,14 +3,14 @@
 <#
 
 .SYNOPSIS
-	Set access rule of directory path. It also allows to override and propagate all child items of this path.
+    Set access rule of directory path. It also allows to override and propagate all child items of this path.
 
 .EXAMPLE
     if only one particular path needs ACL modification use the function the following way:
     C:\PS> Set-PathAccessRule -Path 'SomePath' -Principles "someUserName" -Permissions @{"FullControl" = "Allow"}
 
 .EXAMPLE
-    if one particular path needs ACL modification, and that ACL need to be replicated into all child objects of that path then 
+    if one particular path needs ACL modification, and that ACL need to be replicated into all child objects of that path then
     use the function the following way:
 
     C:\PS> Set-PathAccessRule -Path 'SomePath' -Principles "someUserName" -Permissions @{"FullControl" = "Allow"} -Recurse
@@ -27,25 +27,25 @@
 #>
 function Set-PathAccessRule {
     [CmdletBinding( PositionalBinding = $false )]
-	param 
+    param
     (
         # Directory path to set the access rule
-		[parameter(Mandatory=$true, ValueFromPipeline=$True)]
+        [parameter(Mandatory=$true, ValueFromPipeline=$True)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({ ((Get-Item $_) -is [System.IO.DirectoryInfo])  })]
         [string]
-		$Path,
+        $Path,
 
         # The windows principle that the access rule applies to. Can be a string or string array
         [parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-		[String[]]
+        [String[]]
         $Principles,
 
         # The hashtable that contains the file system right (eg: "FullControl", "Read") and access control (eg: "Allow", "Deny")
         [parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-		[Hashtable]
+        [Hashtable]
         $Permissions,
 
         # The attribute value which indicate permission inheritance (eg: "ContainerInherit", "ObjectInherit" or "ContainerInherit,ObjectInherit" )
@@ -53,14 +53,14 @@ function Set-PathAccessRule {
         [parameter()]
         [ValidateNotNullOrEmpty()]
         [ValidateSet('ContainerInherit','ObjectInherit','None')]
-		[String[]]
+        [String[]]
         $InheritanceFlags = @('ContainerInherit', 'ObjectInherit'),
 
         # Specifies how Access Rule are propagated to child objects. Can be single or array of string values
         [parameter()]
         [ValidateNotNullOrEmpty()]
         [ValidateSet('InheritOnly', 'NoPropagateInherit', 'None')]
-		[String[]]
+        [String[]]
         $PropagationFlags = @('None'),
 
         # Instructs this method to apply all child objects to have same ACL as the top level path, specified in Path variable.
@@ -70,13 +70,13 @@ function Set-PathAccessRule {
         # Returns an object representing full ACL of the path. By default, this cmdlet does not generate any output.
         [Switch]
         $PassThru
-	)
+    )
 
      Process {
 
         [System.Security.AccessControl.InheritanceFlags]$InheritanceFlags = $InheritanceFlags -join ','
         $returnValue = @{"RecursedOpeartionExitCode"=""; "RecursedOpeartionOutput"=""; "RecursedOpeartionError"=""; "TopLevelACL"=""}
-   
+
         $acl = Get-Acl -Path $Path
 
         if (! $acl)
@@ -87,7 +87,7 @@ function Set-PathAccessRule {
         $Principles | foreach {
 
             $currentPrinciple = $_
-            
+
             foreach ($FileSystemRight in $Permissions.Keys) {
 
                 $AccessControl = $Permissions.Item($FileSystemRight)
@@ -112,7 +112,7 @@ function Set-PathAccessRule {
 
                 if ($executedProcess.ExitCode -ne 0)
                 {
-                    [string] $errorMessage = $executedProcess.ErrorInfo 
+                    [string] $errorMessage = $executedProcess.ErrorInfo
 
                     throw "icacls returned error. Error detail $errorMessage"
                 }
@@ -128,10 +128,10 @@ function Set-PathAccessRule {
                 $completeACL = Get-Acl -Path $Path
 
                 $returnValue.Set_Item("TopLevelACL", $completeACL.Access)
-                
-                return $returnValue  
+
+                return $returnValue
             }
-    
+
         }
 
     }
@@ -140,7 +140,7 @@ function Set-PathAccessRule {
 <#
 
 .SYNOPSIS
-	Executes a process and returns process outputs
+    Executes a process and returns process outputs
 
 .EXAMPLE
     C:\PS> Invoke-Process -ApplicationName "SomeApplication.exe" -Argument "/?"
@@ -152,18 +152,18 @@ function Set-PathAccessRule {
 function Invoke-Process {
     [CmdletBinding( PositionalBinding = $false )]
     [OutputType([hashtable])]
-param 
+param
     (
         # The application name or application full path
-		[parameter(Mandatory=$true)]
+        [parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [string]
-		$ApplicationName,
-        
+        $ApplicationName,
+
         # Arguments related to the application execution
         [string]
-		$Argument
-	)
+        $Argument
+    )
 
     $processInfo = New-Object System.Diagnostics.ProcessStartInfo
     $processInfo.FileName = $ApplicationName
