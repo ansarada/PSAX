@@ -52,8 +52,8 @@ function Start-Log {
         else {
             $message = @{
                 severity = 'Information';
-                timeStamp = (Get-Date -Format 'yyyy-MM-ddThh:mm:ss.fffffff');
-                timeStampUTC = (Get-Date (Get-Date).ToUniversalTime() -Format 'yyyy-MM-ddThh:mm:ss.fffffff');
+                timeStamp = $(Get-Date -Format 's');
+                timeStampUTC = $(Get-Date -Format 'u');
                 hostname = $env:ComputerName;
                 pidId = $pidId;
                 username = $env:Username;
