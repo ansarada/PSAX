@@ -72,8 +72,8 @@ Example of output:
 
         $LogRecord = @{
             severity = $Severity;
-            timeStamp = $(Get-Date -Format 's');
-            timeStampUTC = $(Get-Date -Format 'u');
+            timeStamp = (Get-Date -Format 'yyyy-MM-ddThh:mm:ss.fffffff');
+            timeStampUTC = (Get-Date (Get-Date).ToUniversalTime() -Format 'yyyy-MM-ddThh:mm:ss.fffffff');
             hostname = $env:ComputerName;
             pidId = $pidId;
             username = $env:Username;
