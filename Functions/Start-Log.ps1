@@ -52,7 +52,7 @@ function Start-Log {
         else {
             $message = @{
                 severity = 'Information';
-                timeStamp = (Get-Date -Format 'yyyy-MM-ddThh:mm:ss.fff');
+                timeStamp = (Get-Date -Format 'yyyy-MM-ddThh:mm:ss.ffff');
                 hostname = $env:ComputerName;
                 pidId = $pidId;
                 username = $env:Username;
