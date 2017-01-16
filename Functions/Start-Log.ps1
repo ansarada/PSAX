@@ -64,7 +64,7 @@ function Start-Log {
             if ($AddtionalLogData -ne $null) {
                 $message.Add('addtionalLogData', $AddtionalLogData)
             }
-            ConvertTo-Json $message -Compress -Depth 1000 | Out-File -FilePath $logPath -Encoding utf8
+            ConvertTo-Json $message -Compress -Depth 100 | Out-File -FilePath $logPath -Encoding utf8
         }
 
         return @{

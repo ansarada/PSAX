@@ -82,6 +82,6 @@ Example of output:
         if ($Log.AddtionalLogData -ne $null) {
                 $LogRecord.Add('addtionalLogData', $Log.AddtionalLogData)
         }
-        ConvertTo-Json $LogRecord -Compress -Depth 1000 | Out-File -FilePath $Log.LogPath -Append -Encoding utf8
+        ConvertTo-Json $LogRecord -Compress -Depth 100 | Out-File -FilePath $Log.LogPath -Append -Encoding utf8
     }
 }
