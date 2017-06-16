@@ -36,7 +36,7 @@ function Start-Log {
         do {
             $filename = (@(
                     $Name,
-                    $(Get-Date -Format 'yyyyMMdd_hhmmss'),
+                    $(Get-Date -Format 'yyyyMMdd_HHmmss'),
                     $pidId,
                     [Convert]::ToString($i).PadLeft([Convert]::ToString($iLimit).Length-1, '0')
                 ) -join '_') + '.log'
@@ -52,7 +52,7 @@ function Start-Log {
         else {
             $message = @{
                 severity = 'Information';
-                timeStamp = (Get-Date -Format 'yyyy-MM-ddThh:mm:ss.ffff');
+                timeStamp = (Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.ffff');
                 hostname = $env:ComputerName;
                 pidId = $pidId;
                 username = $env:Username;

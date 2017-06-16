@@ -24,7 +24,7 @@ Write-Log -Log $log -LogData 'Hello World!' -Severity 'Debug'
 .NOTES
 The script will automatically log the pidId; timestamp; hostname; username and path of the file. It will write to the file in json format.
 Example of output:
-{"pidId":6508,"timeStamp":"Tuesday, 19 July 2016 2:02:24 PM","logData":"Hello World!","hostname":"dev-dantan","username":"daniel.tan","severity":"Information","logPath":"C:\\Temp\\temp_20160719_015931_6508_000.log"}
+{"pidId":6508,"timeStamp":"2017-06-15T02:18:00.7774","logData":"Hello World!","hostname":"dev-dantan","username":"daniel.tan","severity":"Information","logPath":"C:\\Temp\\temp_20160719_015931_6508_000.log"}
 
 #>
     [CmdletBinding()]
@@ -72,7 +72,7 @@ Example of output:
 
         $LogRecord = @{
             severity = $Severity;
-            timeStamp = (Get-Date -Format 'yyyy-MM-ddThh:mm:ss.ffff');
+            timeStamp = (Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.ffff');
             hostname = $env:ComputerName;
             pidId = $pidId;
             username = $env:Username;
