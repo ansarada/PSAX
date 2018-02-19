@@ -11,35 +11,35 @@ Describe "Write-Log" {
     Context "Write default log" {
         It "Creates a line entry in example.log with default"{
             Write-Log -Log $Log -LogData 'Test Message Default'
-            $Log.LogPath | Should Contain '"logData":"Test Message Default".*"severity":"Information"'
+            $Log.LogPath | Should -FileContentMatch '"logData":"Test Message Default".*"severity":"Information"'
         }
     }
 
     Context "Write error log" {
         It "Creates a line entry in example.log with error"{
             Write-Log -Log $Log -LogData 'Test Message Error' -Severity 'Error'
-            $Log.LogPath | Should Contain '"logData":"Test Message Error".*"severity":"Error"'
+            $Log.LogPath | Should -FileContentMatch '"logData":"Test Message Error".*"severity":"Error"'
         }
     }
 
     Context "Write warning log" {
         It "Creates a line entry in example.log with warning"{
             Write-Log -Log $Log -LogData 'Test Message warning' -Severity 'Warning'
-            $Log.LogPath | Should Contain '"logData":"Test Message warning".*"severity":"Warning"'
+            $Log.LogPath | Should -FileContentMatch '"logData":"Test Message warning".*"severity":"Warning"'
         }
     }
 
     Context "Write Debug log" {
         It "Creates a line entry in example.log with debug"{
             Write-Log -Log $Log -LogData 'Test Message Debug' -Severity 'Debug'
-            $Log.LogPath | Should Contain '"logData":"Test Message Debug".*"severity":"Debug"'
+            $Log.LogPath | Should -FileContentMatch '"logData":"Test Message Debug".*"severity":"Debug"'
         }
     }
 
     Context "Write Information log" {
         It "Creates a line entry in example.log with info"{
             Write-Log -Log $Log -LogData 'Test Message Information'
-            $Log.LogPath | Should Contain '"logData":"Test Message Information".*"severity":"Information"'
+            $Log.LogPath | Should -FileContentMatch '"logData":"Test Message Information".*"severity":"Information"'
         }
     }
 
