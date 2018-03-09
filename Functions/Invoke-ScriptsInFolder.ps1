@@ -26,14 +26,14 @@ Function Invoke-ScriptsInFolder
             throw "FolderPath Is not a directory"
         }
 
-        $scripts = ("$($FolderPath)/*.ps1" | Resolve-Path | Sort-Object)
+        $scripts = @() + ("$($FolderPath)/*.ps1" | Resolve-Path | Sort-Object)
         if ($scripts.count -lt 1){
             throw "No scripts found in folder"
         }
 
         foreach($script in $scripts){
             Write-Host "Running script $($script.ProviderPath)";
-            $proc = (Start-Process 'powershell.exe' -ArgumentList "-File $($script.ProviderPath)" -Wait -PassThru -NoNewWindow)
+            $proc = (Start-Process 'powershell.exe' -ArgumentList "-File `"$($script.ProviderPath)`"" -Wait -PassThru -NoNewWindow)
             if ($proc.exitcode -eq 0){
               Write-Host "Script at $($script.ProviderPath) has succeeded";
             }else{
