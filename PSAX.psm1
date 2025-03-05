@@ -1,5 +1,3 @@
-Import-Module AWSPowerShell
-
 $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 
 "$moduleRoot\Functions\*.ps1" |
